@@ -9,6 +9,7 @@ app.use(express.static(path.join(__dirname, '../public')))
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use('/api', require('./api'));
 // Any routes or other various middlewares should go here!
 
 // Make sure this is right at the end of your server logic!
@@ -26,4 +27,10 @@ app.listen(port, function () {
   console.log("Knock, knock");
   console.log("Who's there?");
   console.log(`Your server, listening on port ${port}`);
+});
+
+app.use(function (err, req, res, next) {
+  console.error(err);
+  console.error(err.stack);
+  res.status(err.status || 500).send(err.message || 'Internal server error.');
 });
