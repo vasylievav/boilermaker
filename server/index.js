@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
+const db = require("./db");
 
 // you'll of course want static middleware so your browser can request things like your 'bundle.js'
 app.use(express.static(path.join(__dirname, '../public')))
@@ -23,11 +24,14 @@ app.get('*', function (req, res, next) {
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
-app.listen(port, function () {
-  console.log("Knock, knock");
-  console.log("Who's there?");
-  console.log(`Your server, listening on port ${port}`);
-});
+db.sync()
+.then(
+  app.listen(port, function () {
+    console.log("Knock, knock");
+    console.log("Who's there?");
+    console.log(`Your server, listening on port ${port}`);
+  })
+);
 
 app.use(function (err, req, res, next) {
   console.error(err);
